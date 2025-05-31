@@ -49,7 +49,6 @@ async function getProduct(productId: number): Promise<ProductResponse> {
 	const body = await response.json();
 
 	console.info(`Product with id ${productId} fetched successfully`);
-	console.debug("Product data:", body);
 	return {
 		status: ProductResponseStatus.SUCCESS,
 		error: null,
