@@ -1,27 +1,24 @@
-import Config from "../config";
-const conf = Config.getInstance();
+import { getProduct, isProductIdCorrect } from "./openfoodfacts_api";
 
-interface Product {
+type Product = {
 	id: number;
-}
+};
 
 const product = {
-	"/api/product/:id": (req: Request): Response => {
+	"/api/product/:id": async (req: Request): Promise<Response> => {
 		const url = new URL(req.url);
-		const id = parseInt(url.pathname.split("/").pop() || "");
+		const id = Number(url.pathname.split("/").pop() || "");
+		console.log("Product ID:", id);
 
-		if (isNaN(id)) {
+		if (!isProductIdCorrect(id)) {
 			return new Response("Invalid product ID", { status: 400 });
 		}
 
-		const product: Product = {
-			id: id,
-		};
+		const product = await getProduct(id);
 
-		return new Response(JSON.stringify(product), {
-			headers: { "Content-Type": "application/json" },
-		});
+		return Response.json(product);
 	},
 };
 
 export default product;
+export type { Product };
