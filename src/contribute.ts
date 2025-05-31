@@ -1,3 +1,6 @@
+import Config from "../config";
+const conf = Config.getInstance();
+
 interface Contribution {
 	productId: number;
 }
