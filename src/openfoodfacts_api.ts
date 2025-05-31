@@ -9,13 +9,32 @@ enum ProductFields {
 	ECOSCORE_DATA = "ecoscore_data",
 }
 
-function isProductIdCorrect(productId: number): boolean {
-	return (
-		Number.isInteger(productId) &&
-		productId > 0 &&
-		productId < 10000000000000 &&
-		productId >= 1000000000000
-	);
+function parseProductId(productId: string): number | null {
+	const serializedId = productId.trim().replace(" ", "");
+	if (serializedId.length === 0) {
+		return null;
+	}
+
+	if (
+		serializedId.length !== 8 && // GTIN-8
+		serializedId.length !== 12 && // GTIN-12
+		serializedId.length !== 13 && // GTIN-13
+		serializedId.length !== 14 // GTIN-14
+	) {
+		return null;
+	}
+
+	const parsedId = Number(productId);
+	if (
+		!parsedId ||
+		isNaN(parsedId) ||
+		!Number.isFinite(parsedId) ||
+		!Number.isInteger(parsedId)
+	) {
+		return null;
+	}
+
+	return parsedId;
 }
 
 function productUrl(productId: number, fields: ProductFields[] = []): string {
@@ -45,4 +64,4 @@ async function getProduct(
 	return parseProduct(json);
 }
 
-export { isProductIdCorrect, ProductFields, getProduct };
+export { parseProductId, ProductFields, getProduct };

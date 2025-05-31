@@ -1,4 +1,4 @@
-import { getProduct, isProductIdCorrect } from "./openfoodfacts_api";
+import { getProduct, parseProductId } from "./openfoodfacts_api";
 
 type Product = {
 	id: number;
@@ -7,10 +7,10 @@ type Product = {
 const product = {
 	"/api/product/:id": async (req: Request): Promise<Response> => {
 		const url = new URL(req.url);
-		const id = Number(url.pathname.split("/").pop() || "");
-		console.log("Product ID:", id);
+		const rawId = url.pathname.split("/").pop() || "";
+		const id = parseProductId(rawId);
 
-		if (!isProductIdCorrect(id)) {
+		if (id === null) {
 			return new Response("Invalid product ID", { status: 400 });
 		}
 
