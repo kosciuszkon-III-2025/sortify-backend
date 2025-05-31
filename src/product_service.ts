@@ -1,3 +1,4 @@
+import ErrorRes from "./error";
 import { getProduct, ProductResponseStatus } from "./openfoodfacts_client";
 import {
 	MaterialType,
@@ -130,17 +131,17 @@ async function handle(productId: string): Promise<Product> {
 	const id = parseProductId(productId);
 	if (id === null) {
 		console.error("Invalid product ID:", productId);
-		throw new Error("Invalid product ID");
+		throw new ErrorRes("Invalid product ID", 400);
 	}
 
 	const response = await getProduct(id);
-	if (response.status !== ProductResponseStatus.SUCCESS) {
-		throw new Error("Failed to fetch product");
+	if (response.status === ProductResponseStatus.NOT_FOUND) {
+		throw new ErrorRes("Product with given ID not found", 404);
 	}
 
 	const product = parseProduct(response.body);
 	if (!product) {
-		throw new Error("Failed to parse product");
+		throw new ErrorRes("Bad product information at our provider", 424);
 	}
 
 	return product;

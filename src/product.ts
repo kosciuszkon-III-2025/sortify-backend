@@ -1,3 +1,4 @@
+import ErrorRes from "./error";
 import handle from "./product_service";
 
 const product = {
@@ -5,7 +6,16 @@ const product = {
 		const url = new URL(req.url);
 		const rawId = url.pathname.split("/").pop() || "";
 
-		const product = await handle(rawId);
+		let product;
+		try {
+			product = await handle(rawId);
+		} catch (e) {
+			if (e instanceof ErrorRes) {
+				return e.response()
+			} else {
+				return new Response("Internal Server Error", { status: 500 })
+			}
+		}
 
 		return Response.json(product);
 	},
