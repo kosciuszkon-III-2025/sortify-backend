@@ -28,4 +28,3 @@ export default class Config {
 		return Config.instance;
 	}
 }
-

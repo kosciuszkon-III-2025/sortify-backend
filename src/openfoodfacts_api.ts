@@ -1,4 +1,4 @@
-import Config from "../config";
+import Config from "./config";
 import type { Product } from "./product";
 
 const conf = Config.getInstance();
@@ -32,7 +32,6 @@ async function getProduct(
 	fields: ProductFields[] = [],
 ): Promise<Product> {
 	const url = productUrl(productId, fields);
-	console.log("Fetching product from Open Food Facts:", url);
 
 	const response = await fetch(url, {
 		method: "GET",
